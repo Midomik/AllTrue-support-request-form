@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import supportReducer from '../features/supportForm/slices/supportSlice'
+import supportReducer from '../features/supportForm/slices/supportFormSlice'
 
 export const store = configureStore({
   reducer: {
-    support: supportReducer,
+    supportForm: supportReducer,
   },
 })
 
