@@ -6,6 +6,7 @@ import { supportFormSchema, type SupportFormValues } from '../schema/supportForm
 import { useAppDispatch } from '../../../app/hooks'
 import { saveForm } from '../slices/supportFormSlice'
 import ErrorText from '../components/ErrorText'
+import { useNavigate } from 'react-router-dom'
 
 export default function SupportFormPage() {
 
@@ -13,13 +14,15 @@ export default function SupportFormPage() {
     register,
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<SupportFormValues>({
     resolver: zodResolver(supportFormSchema)
   })
 
-  const { fields, append, remove } = useFieldArray({ control, name: 'steps' })
+  const { fields, append } = useFieldArray({ control, name: 'steps' })
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
   const onSubmit: SubmitHandler<SupportFormValues> = (data) => {
     const payload: SupportFormValues = {
@@ -29,7 +32,9 @@ export default function SupportFormPage() {
       tags: data.tags ?? [],
       steps: data.steps.map((s, idx) => ({ id: idx, value: s.value })),
     }
-    dispatch(saveForm(payload))
+    dispatch(saveForm(payload));
+    reset();
+    navigate('/confirmation');
   }
 
   return (
@@ -114,20 +119,11 @@ export default function SupportFormPage() {
           <div className="space-y-3">
             {fields.map((f, idx) => (
               <div key={f.id}>
-                <div className="flex items-center gap-2">
-                  <input
-                    className="input flex-1"
-                    placeholder={`Step ${idx + 1}`}
-                    {...register(`steps.${idx}.value` as const)}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => remove(idx)}
-                    className="text-sm text-red-600 hover:underline"
-                  >
-                    Remove
-                  </button>
-                </div>
+                <input
+                  className="input flex-1"
+                  placeholder={`Step ${idx + 1}`}
+                  {...register(`steps.${idx}.value`)}
+                />
                 <ErrorText text={errors.steps?.[idx]?.value?.message} />
               </div>
             ))}
