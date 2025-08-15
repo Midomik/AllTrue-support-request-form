@@ -8,13 +8,14 @@ import { saveForm } from '../slices/supportFormSlice'
 import ErrorText from '../components/ErrorText'
 import { useNavigate } from 'react-router-dom'
 
+// SupportFormPage – collects support request data entered by the user
+
 export default function SupportFormPage() {
 
   const {
     register,
     control,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<SupportFormValues>({
     resolver: zodResolver(supportFormSchema)
@@ -33,7 +34,6 @@ export default function SupportFormPage() {
       steps: data.steps.map((s, idx) => ({ id: idx, value: s.value })),
     }
     dispatch(saveForm(payload));
-    reset();
     navigate('/confirmation');
   }
 
@@ -44,7 +44,7 @@ export default function SupportFormPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Full name */}
         <div>
-          <label htmlFor="fullName" className="label mb-1">
+          <label htmlFor="fullName" className="detail-label">
             Full name
           </label>
           <input
@@ -58,7 +58,7 @@ export default function SupportFormPage() {
 
         {/* Email */}
         <div>
-          <label htmlFor="email" className="label mb-1">
+          <label htmlFor="email" className="detail-label">
             Email
           </label>
           <input
@@ -73,7 +73,7 @@ export default function SupportFormPage() {
 
         {/* Issue type */}
         <div>
-          <label htmlFor="issueType" className="label mb-1">
+          <label htmlFor="issueType" className="detail-label">
             Issue type
           </label>
           <select
@@ -92,7 +92,7 @@ export default function SupportFormPage() {
 
         {/* Tags */}
         <div>
-          <span className="label mb-1">Tags</span>
+          <span className="detail-label">Tags</span>
           <div className="flex flex-wrap gap-4">
             {TAGS.map((tag: Tag) => (
               <label key={tag} className="inline-flex items-center gap-2">
@@ -120,7 +120,7 @@ export default function SupportFormPage() {
             {fields.map((f, idx) => (
               <div key={f.id}>
                 <input
-                  className="input flex-1"
+                  className="input"
                   placeholder={`Step ${idx + 1}`}
                   {...register(`steps.${idx}.value`)}
                 />
@@ -131,7 +131,8 @@ export default function SupportFormPage() {
           <ErrorText text={errors.steps?.message} />
         </div>
 
-        <button type="submit" className="pt-2 flex items-center gap-2 btn btn-primary">
+        {/* Submit */}
+        <button type="submit" className="pt-2 flex items-center gap-2 btn">
           Submit
         </button>
       </form>
