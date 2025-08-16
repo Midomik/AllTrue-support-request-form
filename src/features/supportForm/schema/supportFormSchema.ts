@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { ISSUE_TYPES, TAGS } from '../constants'
+import { ISSUE_TYPES, TAGS } from '../types'
 
 export const supportFormSchema = z.object({
   fullName: z.string().min(1, 'Full name is required'),
@@ -9,7 +9,6 @@ export const supportFormSchema = z.object({
   steps: z
     .array(
       z.object({
-        id: z.number().int().min(0),
         value: z.string().min(1, 'Step cannot be empty'),
       })
     )

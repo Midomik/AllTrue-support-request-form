@@ -1,6 +1,6 @@
 import { useFieldArray, useForm, type SubmitHandler } from 'react-hook-form'
 import { type IssueType, type Tag } from '../types'
-import { ISSUE_TYPES, TAGS } from '../constants'
+import { ISSUE_TYPES, TAGS } from '../types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { supportFormSchema, type SupportFormValues } from '../schema/supportFormSchema'
 import { useAppDispatch } from '../../../app/hooks'
@@ -21,7 +21,7 @@ export default function SupportFormPage() {
     resolver: zodResolver(supportFormSchema)
   })
 
-  const { fields, append } = useFieldArray({ control, name: 'steps' })
+  const { fields, append, remove } = useFieldArray({ control, name: 'steps' })
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
@@ -31,7 +31,7 @@ export default function SupportFormPage() {
       email: data.email,
       issueType: data.issueType,
       tags: data.tags ?? [],
-      steps: data.steps.map((s, idx) => ({ id: idx, value: s.value })),
+      steps: data.steps,
     }
     dispatch(saveForm(payload));
     navigate('/confirmation');
@@ -63,7 +63,7 @@ export default function SupportFormPage() {
           </label>
           <input
             id="email"
-            type="text"
+            type="email"
             className="input"
             placeholder="jane@example.com"
             {...register('email')}
@@ -109,7 +109,7 @@ export default function SupportFormPage() {
             <label className="label">Steps to reproduce</label>
             <button
               type="button"
-              onClick={() => append({ value: '', id: fields.length })}
+              onClick={() => append({ value: '' })}
               className="text-sm text-primary hover:underline"
             >
               + Add step
@@ -119,11 +119,20 @@ export default function SupportFormPage() {
           <div className="space-y-3">
             {fields.map((f, idx) => (
               <div key={f.id}>
-                <input
-                  className="input"
-                  placeholder={`Step ${idx + 1}`}
-                  {...register(`steps.${idx}.value`)}
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    className="input flex-1"
+                    placeholder={`Step ${idx + 1}`}
+                    {...register(`steps.${idx}.value` as const)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => remove(idx)}
+                    className="text-sm text-red-600 hover:underline"
+                  >
+                    Remove
+                  </button>
+                </div>
                 <ErrorText text={errors.steps?.[idx]?.value?.message} />
               </div>
             ))}

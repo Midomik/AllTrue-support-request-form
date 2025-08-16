@@ -1,3 +1,4 @@
+import { Navigate, Link } from 'react-router-dom'
 import { useAppSelector } from '../../../app/hooks'
 import DetailItem from '../components/DetailItem'
 
@@ -5,6 +6,11 @@ import DetailItem from '../components/DetailItem'
 
 export default function ConfirmationPage() {
   const data = useAppSelector((s) => s.supportForm)
+
+  // Guard: if user navigates directly or data is empty, send back to form
+  if (!data || data.steps.length === 0) {
+    return <Navigate replace to="/" />
+  }
 
   return (
     <div className="mx-auto max-w-2xl p-6">
@@ -35,10 +41,14 @@ export default function ConfirmationPage() {
           <div>
             <span className="detail-label">Steps to reproduce</span>
             <ol className="list-decimal ml-6 space-y-1">
-              {data.steps.map((s) => (
-                <li key={s.id}>{s.value}</li>
+              {data.steps.map((s, idx) => (
+                <li key={idx}>{s.value}</li>
               ))}
             </ol>
+          </div>
+
+          <div className="mt-6">
+            <Link to="/" className="btn">Back</Link>
           </div>
         </div>
       </div>

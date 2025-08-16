@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import reducer, { saveForm } from './supportFormSlice'
 import type { SupportFormValues } from '../schema/supportFormSchema'
-import { ISSUE_TYPES, TAGS } from '../constants'
+import { ISSUE_TYPES, TAGS } from '../types'
 import type { UnknownAction } from '@reduxjs/toolkit'
 
 const makePayload = (overrides: Partial<SupportFormValues> = {}): SupportFormValues => ({
@@ -9,7 +9,7 @@ const makePayload = (overrides: Partial<SupportFormValues> = {}): SupportFormVal
   email: 'john@example.com',
   issueType: ISSUE_TYPES[0],
   tags: [TAGS[0]],
-  steps: [{ id: 0, value: 'Open the app' }],
+  steps: [{ value: 'Open the app' }],
   ...overrides,
 })
 
